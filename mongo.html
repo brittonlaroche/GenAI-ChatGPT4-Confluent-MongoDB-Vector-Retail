@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>MongoDB Data API</title>
+    <!-- When you need to test a json body in a REST API call, but don't have access to postman. -->
+    <!-- Britton LaRoche's Postrapper can get you the results you need!  -->
+    <!-- Let's use Bootstrap improve the default look a bit -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"
+    />
+  </head>
+  <style>
+    div {
+      margin-left: 40px;
+    }
+    table td {
+      padding: 5px;
+    }
+  </style>
+  <body>
+    <div>
+      <h2>MongoDB Data API</h2>
+      <p>
+        This simple page demonstrates json REST based API calls in javascript against the MongoDB Atlas Data API
+      </p>
+
+      <form>
+        <table>
+          <tr><td style="padding: 10">URL:</td><td> <input style="min-width: 1000px;" type="text" id="input_url" name="input_url" 
+            value="http://localhost:3000/v1/action/find"></td></tr>
+            <tr><td> VERB:</td><td> <input type="text" id="input_verb" name="input_verb" value="POST" /></td></tr>
+            <tr><td> Header Document:</td><td> <textarea class="form-control" id="header_json" rows="5">
+              {
+                "Content-Type": "application/json",
+                "Access-Control-Request-Headers": "*",
+                "api-key": "YOUR-MONGODB-DATA-API-KEY"
+              }
+            </textarea></td></tr>
+          <tr><td> Input Document:</td><td> <textarea class="form-control" id="input_json" rows="15">
+            {
+            "dataSource": "Kafcongo-Demo",
+            "database": "Sales",
+            "collection": "CustomerOrders",
+            "filter": {
+                "EMAIL_ADDRESS": "domingo.morano@internalmail"
+            }
+            }
+          </textarea></td></tr>
+          <tr><td> Results: </td><td> <textarea class="form-control" id="results" rows="10"></textarea></td></tr>
+        </table>
+      </form>
+      <br>
+      <button type="submit" onclick="sendJson()">Send</button>
+    </div>
+
+    <script>
+  
+  const sendJson = async () => {
+        var txt = "";
+        var httpVerb = document.getElementById("input_verb").value;
+        var webhook_url = document.getElementById("input_url").value;
+        var headerDoc = document.getElementById("header_json").value;
+        var sHeaders = JSON.parse(headerDoc);
+        var response = "";
+        var inputDoc = JSON.parse(document.getElementById("input_json").value);
+        var myBody = JSON.stringify(inputDoc);
+
+        console.log(webhook_url);
+        //Check to see if we have an input document or not
+        if (inputDoc != "") {
+          response = await fetch(webhook_url, {
+            method: httpVerb,
+            body: myBody, // string or object
+            headers: sHeaders
+          });
+        } else {
+          response = await fetch(webhook_url, {
+            method: httpVerb
+          });
+        }
+
+        const myJson = await response.json(); //extract JSON from the http response
+        console.log(myJson);
+        document.getElementById("results").innerHTML = JSON.stringify(myJson, undefined, 2);
+      };
+
+    </script>
+  </body>
+</html>
