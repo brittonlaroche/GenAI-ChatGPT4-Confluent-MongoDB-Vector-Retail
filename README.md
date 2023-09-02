@@ -1,7 +1,7 @@
 # Live Generative AI demo with Open AI - ChatGPT 4, Kafka, MongoDB Atlas Vector Search and D-ID
 
 ## Architecture:
-![architecture](./architecture.png)
+![architecture](./architecture2.png)
 
 ## Initial Setup:
 * (install express) open a terminal in the folder and run  - npm install express
