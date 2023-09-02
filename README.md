@@ -21,4 +21,4 @@
 * (stream) press the start button to start streaming
 
 ## App:
-![app](./app.png)
+![app](./app2.png)
