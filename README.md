@@ -1,8 +1,16 @@
-# Streaming Live Demo by D-ID
+# Live Generative AI demo with Open AI - ChatGPT 4, Kafka, MongoDB Atlas Vector Search and D-ID
+
+## Architecture:
+![architecture](./architecture.png)
 
 ## Initial Setup:
 * (install express) open a terminal in the folder and run  - npm install express
-* (add your api key) edit the `api.json` inside the uncompressed folder and replace the emoji with your key
+* Add additional npm installs for what is missing in app.js
+* run - npm i cors
+* run - npm i express http-proxy-middleware
+* run - npm i express morgan
+* Pay attention to the rewrite rules in app.js and update for your MongoDB Atlas and Confluent Cloud Environments
+* (add your api keys) edit the `api.json` inside the uncompressed folder and replace the emoji with your key
 
 
 ## Start the demo:
