@@ -277,9 +277,8 @@
         <div id="input-dialog">
           <textarea id="txtOutput" rows="15" style="margin-top: 10px;" placeholder="Output"></textarea>
           <div>
-              <button type="button" id="send-openai-button" style="margin-left: 10px">Send to OpenAI</button>
-              <label id="lblSpeak"><input id="chkSpeakToText" type="checkbox" />Listen</label>
-              <label id="lblMute"><input id="chkMute" type="checkbox" onclick=""/>Mute Mike</label>
+              <button type="button" id="send-openai-button" style="margin-left: 10px">Send Text to OpenAI</button>
+              <button type="button" id="talk-openai-button" style="margin-left: 10px">Push and Hold to Talk to OpenAI</button>
               <label id="lblMute"><input id="chkVector" type="checkbox" onclick=""/>Vector Search</label>
               <select id="selModel">
                   <option value="gpt-4">gpt-4</option>
@@ -362,6 +361,39 @@
         chkCC.checked = "";
         inputOutput.style.display = "none";
         
+      }
+      function setCookie(cname, cvalue, exdays) {
+        const d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        let expires = "expires="+d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+      }
+
+      function getCookie(cname) {
+        let name = cname + "=";
+        let ca = document.cookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+          let c = ca[i];
+          while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
+        }
+        return "";
+      }
+
+      function checkCookie() {
+        let user = getCookie("username");
+        if (user != "") {
+          alert("Welcome again " + user);
+        } else {
+          user = prompt("Please enter your name:", "");
+          if (user != "" && user != null) {
+            setCookie("username", user, 365);
+          }
+        }
       }
 
       function init(){

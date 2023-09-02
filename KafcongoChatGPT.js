@@ -115,7 +115,7 @@ const sendToMicroserviceQna = async () => {
     var txt = "";
     var response = "";
     var sQuestion = txtMsg.value;
-    var mute = document.getElementById('chkMute');
+    
     /*
     if (sQuestion == "") {
         alert("Type in your question!");
@@ -123,13 +123,11 @@ const sendToMicroserviceQna = async () => {
         return;
     }
     */
-    if (mute.checked){
-        return;
-    }
+
     txtOutput.value += "user: " + sQuestion +"\n";
     txtOutput.scrollTop = txtOutput.scrollHeight;
     console.log("sendToMicroserviceQna");
-    mute.checked = true;
+
     //Send the single question, the microservice handles context
     var userEmail = JSON.stringify(document.getElementById("user-email").value);
     //{"user": "a@mdb.com","question": "I am going on a date. I am looking for some suggestion or tips on dressing"}
@@ -267,7 +265,7 @@ function generateProductCard(data){
 
 function SendToOpenAI() {
 
-    var mute = document.getElementById('chkMute');
+   
     var sQuestion = txtMsg.value;
     /*
     if (sQuestion == "") {
@@ -276,11 +274,9 @@ function SendToOpenAI() {
         return;
     }
     */
-    if (mute.checked){
-        return;
-    }
+ 
     spMsg.innerHTML = "Chat GPT is thinking...";
-    mute.checked = true;
+   
 
     //lets keep context
     conversationHistory.push({
@@ -396,10 +392,10 @@ function SendToOpenAI() {
     txtMsg.value = "";
 }
 
+/*
 const speechToText = document.getElementById('chkSpeakToText');
 speechToText.onclick = async () => {
-
-    if (oSpeechRecognizer) {
+if (oSpeechRecognizer) {
 
         if (speechToText.checked) {
             oSpeechRecognizer.start();
@@ -409,8 +405,10 @@ speechToText.onclick = async () => {
         }
 
         return;
-    }    
-
+    }   
+*/
+const talkOpenAI = document.getElementById('talk-openai-button');
+talkOpenAI.onmousedown = async () => {
     oSpeechRecognizer = new webkitSpeechRecognition();
     oSpeechRecognizer.continuous = true;
     oSpeechRecognizer.interimResults = true;
@@ -423,9 +421,7 @@ speechToText.onclick = async () => {
             var transcript = event.results[i][0].transcript;
 
             if (event.results[i].isFinal) {
-                txtMsg.value = transcript;
-                var sendOpenAIButton = document.getElementById('send-openai-button');
-                sendOpenAIButton.click();
+                txtMsg.value = txtMsg.value + transcript;
             } else {
                 transcript.replace("\n", "<br>");
                 interimTranscripts += transcript;
@@ -440,4 +436,11 @@ speechToText.onclick = async () => {
     oSpeechRecognizer.onerror = function (event) {
         speechToText.checked = false;
     };
+}
+talkOpenAI.onmouseup = async () => {
+    if (oSpeechRecognizer) {
+        oSpeechRecognizer.stop();
+    }
+    var sendOpenAIButton = document.getElementById('send-openai-button');
+    sendOpenAIButton.click();
 }
