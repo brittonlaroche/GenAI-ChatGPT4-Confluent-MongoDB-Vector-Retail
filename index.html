@@ -174,7 +174,7 @@
 
     .product-card {
       flex: 0 0 272px;
-      height: 478px;
+      height: 512px;
       border: 1px solid #ccc;
       padding: 10px;
       box-sizing: border-box;
@@ -210,6 +210,15 @@
       background-color: #fff;
       padding: 20px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      margin-top: 100px;
+    }
+    .settings-input {
+      width: 90%;
+      margin: 5px 0;
     }
     </style>
   </head>
@@ -261,6 +270,7 @@
               None
           </label>
           <button id="load-profile-button" type="button">Load User Data</button>
+          <button id="open-settings-button" type="button">Open Settings</button>
         </div>
         <div id="input-output" style="display: none">
             <table>
@@ -303,20 +313,42 @@
           <!-- Product cards will be generated here -->
         </div>
       </main>
-          <!-- Modal  popup-->
+          <!-- Modal  product popup-->
         <div class="modal" id="product-modal">
           <div class="modal-content">
             <img id="modal-image" src="" alt="Product">
             <h3 id="modal-title">Product</h3>
             <p id="modal-price">$20.00</p>
-            <div class="modal-buttons" style="align-items: center;">
+            <div class="modal-buttons">
               <button id="mCart">Add to Cart</button>
               <button id="mSave">Save for Later</button>
               <button id="mClose">Close Window</button>
             </div>
           </div>
         </div>
-      
+      <!-- Settings Modal -->
+      <div class="modal" id="settings-modal">
+        <div class="modal-content">
+          <h3>Settings</h3>
+          <label for="set-did-api-key">DID API Key:</label><input type="text" id="set-did-api-key" name="set-did-api-key" class="settings-input">
+          <label for="set-open-api-key">Open AI API Key:</label><input type="text" id="set-open-api-key" name="set-open-api-key" class="settings-input">
+          <label for="set-first-name">First Name:</label><input type="text" id="set-first-name" name="set-first-name" class="settings-input">
+          <label for="set-last-name">Last Name:</label><input type="text" id="set-last-name" name="set-last-name" class="settings-input">
+          <label for="set-email-address">Email Address:</label><input type="text" id="set-email-address" name="set-email-address" class="settings-input">
+          <label for="set-sex">Sex (Gender):</label><input type="text" id="set-sex" name="set-sex" class="settings-input">
+          <label for="set-shirt-size">Shirt Size:</label><input type="text" id="set-shirt-size" name="set-shirt-size" class="settings-input">
+          <label for="set-waist-size">Waist Size:</label><input type="text" id="set-waist-size" name="set-waist-size" class="settings-input">
+          <label for="set-inseam-size">Inseam Size:</label><input type="text" id="set-inseam-size" name="set-inseam-size" class="settings-input">
+          <label for="set-dress-size">Dress Size:</label><input type="text" id="set-dress-size" name="set-dress-size" class="settings-input">
+          <label for="set-shoe-size">Shoe Size:</label><input type="text" id="set-shoe-size" name="set-shoe-size" class="settings-input">
+          <label for="set-address">Address:</label><input type="text" id="set-address" name="set-address" class="settings-input">
+          <div class="modal-buttons">
+            <button id="save-settings-button">Save Settings</button>
+            <button id="close-settings-button">Close Window</button>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <script type="module" src="./index.js"></script>

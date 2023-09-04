@@ -27,6 +27,10 @@ const modal = document.getElementById('product-modal');
 const modalImage = document.getElementById('modal-image');
 const modalTitle = document.getElementById('modal-title');
 const modalPrice = document.getElementById('modal-price');
+const settingsModal = document.getElementById('settings-modal');
+const SetDidApiKey = document.getElementById('set-did-api-key');
+const SetOpenApiKey = document.getElementById('set-open-api-key');
+var userProfileCache = "";
 
 const loadUserProfileButton = document.getElementById('load-profile-button');
 loadUserProfileButton.onclick = async () => {
@@ -62,7 +66,9 @@ loadUserProfileButton.onclick = async () => {
     const myJson = await response.json(); //extract JSON from the http response
     console.log(myJson);
     var userProfile = JSON.stringify(myJson, undefined, 2);
-    conversationHistory.push({"role":"system","content":"The user you are talking to has the following profile data in json format " + JSON.stringify(myJson, undefined, 2)});
+    userProfileCache = userProfile;
+    conversationHistory.push({"role":"system","content":"The user you are talking to has the following profile data in json document format " + JSON.stringify(myJson, undefined, 2)});
+    updateDocumentSettings();
 };
 
 const sendTopicButton = document.getElementById('send-topic-button');
@@ -160,10 +166,92 @@ const sendToMicroserviceQna = async () => {
     document.getElementById("results").innerHTML = JSON.stringify(myJson, undefined, 2);
 };
 
+//Handle user settings
+const openSettingsButton = document.getElementById('open-settings-button');
+openSettingsButton.onclick = async () => {
+    updateDocumentSettings();
+    settingsModal.style.display = 'block';
+};
+const closeSettingsButton = document.getElementById('close-settings-button');
+closeSettingsButton.onclick = async () => {
+    settingsModal.style.display = 'none';
+};
+const saveSettingsButton = document.getElementById('save-settings-button');
+saveSettingsButton.onclick = async () => {
+    settingsModal.style.display = 'none';
+
+    //upsert all the user data into the UserProfile collection
+    var response = "";
+    var userEmail = JSON.stringify(document.getElementById("set-email-address").value);
+    var setFirstName = JSON.stringify(document.getElementById("set-first-name").value);
+    var setLastName = JSON.stringify(document.getElementById("set-last-name").value);
+    var setSex = JSON.stringify(document.getElementById("set-sex").value);
+    var setShirtSize = JSON.stringify(document.getElementById("set-shirt-size").value);
+    var setWaistSize= JSON.stringify(document.getElementById("set-waist-size").value);
+    var setInseamSize = JSON.stringify(document.getElementById("set-inseam-size").value);
+    var setDressSize = JSON.stringify(document.getElementById("set-dress-size").value);
+    var setShoeSize = JSON.stringify(document.getElementById("set-shoe-size").value);
+    var setAddress = JSON.stringify(document.getElementById("set-address").value);
+    var myString = "{\"dataSource\": \"Kafcongo-Demo\",\"database\": \"Sales\",\"collection\": \"UserProfile\",\"filter\": {\"email\":  " + userEmail +"},"+
+        "\"update\": { " +
+        "   \"$set\": {\"first_name\":" + setFirstName + ", " +
+                "\"last_name\":" + setLastName + ", " +
+                "\"email\":" + userEmail + ", " +
+                "\"shirt_size\":" + setShirtSize + ", " +
+                "\"waist_size\":" + setWaistSize + ", " +
+                "\"inseam_size\":" + setInseamSize + ", " +
+                "\"dress_size\":" + setDressSize + ", " +
+                "\"shoe_size\":" + setShoeSize + ", " +
+                "\"address\":" + setAddress + ", " +
+                "\"sex\":" + setSex + " " +
+            "}" +
+        "}," +
+        "\"upsert\":true" +
+        "}";
+    console.log(myString);
+    var inputDoc = JSON.parse(myString);
+    var myBody = JSON.stringify(inputDoc);
+    //Check to see if we have an input document or not
+    response = await fetch("http://localhost:3000/v1/action/updateOne", {
+      method: 'POST',
+      body: myBody, // string or object
+      headers:  { 
+                "Content-Type":"application/json",
+                "api-key": `${API_KEYS['mongo-key']}`
+          }
+    });
+    console.log(response);
+    const myJson = await response.json(); //extract JSON from the http response
+    console.log(myJson);
+    conversationHistory.push({"role":"system","content":"The user you are talking to has the following profile data in json format " + JSON.stringify(myBody, undefined, 2)});
+    var userEmailDoc = document.getElementById("user-email");
+    userEmail = userEmail.replace(/"|'/g, '');
+    userEmailDoc.value = userEmail;
+};
+function updateDocumentSettings(){
+    console.log("updateDocumentSettings with user data");
+    var myProfile = JSON.parse(userProfileCache);
+    console.log(myProfile);
+    var jSex = myProfile.sex;
+    console.log(jSex);
+    document.getElementById("set-email-address").value = myProfile.document.email;
+    document.getElementById("set-first-name").value = myProfile.document.first_name;
+    document.getElementById("set-last-name").value = myProfile.document.last_name;
+    document.getElementById("set-sex").value = myProfile.document.sex;
+    document.getElementById("set-shirt-size").value = myProfile.document.shirt_size;
+    document.getElementById("set-waist-size").value = myProfile.document.waist_size;
+    document.getElementById("set-inseam-size").value = myProfile.document.inseam_size;
+    document.getElementById("set-dress-size").value = myProfile.document.dress_size;
+    document.getElementById("set-shoe-size").value = myProfile.document.shoe_size;
+    document.getElementById("set-address").value = myProfile.document.address;
+};
+function cleanJSON(fieldValue){
+    var pretty = JSON.stringify(fieldValue);
+    pretty = pretty.replace(/"|'/g, '');
+}
+
 // Get the products container element
 const productsContainer = document.getElementById('products-container');
-
-
 // Function to handle click events on product cards
 function handleProductClick(data) {
     //alert(`You clicked on Product ${productData}`);
@@ -176,7 +264,10 @@ function handleProductClick(data) {
     console.log(userEmail);
     userEmail = userEmail.replace(/"|'/g, '');
     console.log(userEmail);
-    var sendJson = "{\"value\": {\"type\": \"JSON\", \"data\": \"{'EMAIL_ADDRESS' :'" + userEmail + "', 'PRODUCT_ID':"+ productData.id + ", 'TITLE':'" + productData.title + "', 'PRODUCT_PRICE':" + productData.price + " }\"}}";
+    var sendJson = "{\"value\": {\"type\": \"JSON\", \"data\": \"{'EMAIL_ADDRESS' :'" + userEmail + 
+        "', 'PRODUCT_ID':"+ productData.id + 
+        ", 'TITLE':'" + productData.title + 
+        "', 'PRODUCT_PRICE':" + productData.price + " }\"}}";
     sendTextField.value = sendJson;
 
     modalImage.src = productData.link;
