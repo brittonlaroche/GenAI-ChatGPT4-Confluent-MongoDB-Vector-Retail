@@ -1,8 +1,8 @@
 'use strict';
 import DID_API from './api.json' assert { type: 'json' };
+//if (DID_API.url == '🤫') alert('Please put your api key inside ./api.json and restart..');
 
-if (DID_API.key == '🤫') alert('Please put your api key inside ./api.json and restart..');
-
+var DID_API_KEY = "";
 
 const RTCPeerConnection = (
   window.RTCPeerConnection ||
@@ -37,10 +37,17 @@ connectButton.onclick = async () => {
   closePC();
 
   //https://d-id-public-bucket.s3.amazonaws.com/or-roman.jpg
+  if ( DID_API_KEY == "" ){
+    DID_API_KEY = document.getElementById("set-did-api-key").value;
+    if ( DID_API_KEY == "" ){
+      alert('Please enter your DID API Key in the settings window.  Press the Open Settings button to get started')
+      return;
+    }
+  }
   const sessionResponse = await fetchWithRetries(`${DID_API.url}/talks/streams`, {
     method: 'POST',
     headers: {
-      Authorization: `Basic ${DID_API.key}`,
+      Authorization: `Basic ${DID_API_KEY}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -64,7 +71,7 @@ connectButton.onclick = async () => {
   const sdpResponse = await fetch(`${DID_API.url}/talks/streams/${streamId}/sdp`, {
     method: 'POST',
     headers: {
-      Authorization: `Basic ${DID_API.key}`,
+      Authorization: `Basic ${DID_API_KEY}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -109,7 +116,7 @@ talkButton.onclick = async () => {
     const talkResponse = await fetchWithRetries(`${DID_API.url}/talks/streams/${streamId}`, {
       method: 'POST',
       headers: {
-        Authorization: `Basic ${DID_API.key}`,
+        Authorization: `Basic ${DID_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -140,7 +147,7 @@ destroyButton.onclick = async () => {
   await fetch(`${DID_API.url}/talks/streams/${streamId}`, {
     method: 'DELETE',
     headers: {
-      Authorization: `Basic ${DID_API.key}`,
+      Authorization: `Basic ${DID_API_KEY}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ session_id: sessionId }),
@@ -163,7 +170,7 @@ function onIceCandidate(event) {
     fetch(`${DID_API.url}/talks/streams/${streamId}/ice`, {
       method: 'POST',
       headers: {
-        Authorization: `Basic ${DID_API.key}`,
+        Authorization: `Basic ${DID_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -294,11 +301,6 @@ function playIdleVideo() {
   talkVideo.src = 'femdroid_idle.mp4';
   talkVideo.loop = true;
 }
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 
 function stopAllStreams() {
   if (talkVideo.srcObject) {

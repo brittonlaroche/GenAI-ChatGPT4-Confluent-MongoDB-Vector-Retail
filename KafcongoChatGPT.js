@@ -1,6 +1,6 @@
 import API_KEYS from './api.json' assert { type: 'json' };
 
-if (API_KEYS['open-api-key'] == '🤫') alert('Please put your open api key inside ./api.json and restart..');
+//if (API_KEYS['open-api-key'] == '🤫') alert('Please put your open api key inside ./api.json and restart..');
 if (API_KEYS['mongo-key'] == '🤫') alert('Please put your MongoDB api key inside ./api.json and restart..');
 if (API_KEYS['cc-key'] == '🤫') alert('Please put your Confluent Cloud Basic auth api key inside ./api.json and restart..');
 
@@ -15,7 +15,7 @@ if (API_KEYS['cc-key'] == '🤫') alert('Please put your Confluent Cloud Basic a
  All we need to do is leave this comment in the code here giving Igor Krupitsky credit and its all good
 */
 
-var OPENAI_API_KEY = `${API_KEYS['open-api-key']}`;
+var OPENAI_API_KEY = "";
 var conversationHistory = new Array();
 var bTextToSpeechSupported = false;
 var bSpeechInProgress = false;
@@ -179,10 +179,15 @@ closeSettingsButton.onclick = async () => {
 const saveSettingsButton = document.getElementById('save-settings-button');
 saveSettingsButton.onclick = async () => {
     settingsModal.style.display = 'none';
+    var didApiKey = document.getElementById("set-did-api-key").value;
+    var openApiKey = document.getElementById("set-open-api-key").value;
+    var userEmail = JSON.stringify(document.getElementById("set-email-address").value);
 
+    setCookie('did-api-key', didApiKey, 36500);
+    setCookie('open-api-key', openApiKey, 36500);
+    setCookie('user-email', userEmail, 36500);
     //upsert all the user data into the UserProfile collection
     var response = "";
-    var userEmail = JSON.stringify(document.getElementById("set-email-address").value);
     var setFirstName = JSON.stringify(document.getElementById("set-first-name").value);
     var setLastName = JSON.stringify(document.getElementById("set-last-name").value);
     var setSex = JSON.stringify(document.getElementById("set-sex").value);
@@ -229,11 +234,9 @@ saveSettingsButton.onclick = async () => {
     userEmailDoc.value = userEmail;
 };
 function updateDocumentSettings(){
-    console.log("updateDocumentSettings with user data");
+    //console.log("updateDocumentSettings with user data");
     var myProfile = JSON.parse(userProfileCache);
-    console.log(myProfile);
-    var jSex = myProfile.sex;
-    console.log(jSex);
+    //console.log(myProfile);
     document.getElementById("set-email-address").value = myProfile.document.email;
     document.getElementById("set-first-name").value = myProfile.document.first_name;
     document.getElementById("set-last-name").value = myProfile.document.last_name;
@@ -244,11 +247,50 @@ function updateDocumentSettings(){
     document.getElementById("set-dress-size").value = myProfile.document.dress_size;
     document.getElementById("set-shoe-size").value = myProfile.document.shoe_size;
     document.getElementById("set-address").value = myProfile.document.address;
+    document.getElementById("set-did-api-key").value = getCookie("did-api-key");
+    document.getElementById("set-open-api-key").value = getCookie("open-api-key");
+    document.getElementById("user-email").value = getCookie("user-email");
+    OPENAI_API_KEY = document.getElementById("set-open-api-key").value;
 };
 function cleanJSON(fieldValue){
     var pretty = JSON.stringify(fieldValue);
     pretty = pretty.replace(/"|'/g, '');
 }
+
+function setCookie(cname, cvalue, exdays) {
+    const d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    let expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+    let name = cname + "=";
+    let ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+function checkCookie() {
+    let user = getCookie("username");
+    if (user != "") {
+        alert("Welcome again " + user);
+    } else {
+        user = prompt("Please enter your name:", "");
+        if (user != "" && user != null) {
+        setCookie("username", user, 365);
+        }
+    }
+}
+
 
 // Get the products container element
 const productsContainer = document.getElementById('products-container');
@@ -366,6 +408,10 @@ function SendToOpenAI() {
     }
     */
  
+    if (OPENAI_API_KEY == ""){
+        alert('Please put your open api key inside the settings window.  Press the Open Settings button to enter the information');
+        return;
+    }
     spMsg.innerHTML = "Chat GPT is thinking...";
    
 
@@ -528,7 +574,12 @@ talkOpenAI.onmousedown = async () => {
         speechToText.checked = false;
     };
 }
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 talkOpenAI.onmouseup = async () => {
+    //Let the text to speech finish
+    await sleep(2000);
     if (oSpeechRecognizer) {
         oSpeechRecognizer.stop();
     }
