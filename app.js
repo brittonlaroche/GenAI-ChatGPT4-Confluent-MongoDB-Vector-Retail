@@ -15,7 +15,7 @@ app.use(cors({
     origin: '*'
 }));
 
-const { CC_URL_VALUE } = "https://pkc-rgm37.us-west-2.aws.confluent.cloud:443/kafka/v3/clusters/lkc-2rgw32/topics/user-clicks/records";
+
 
 app.use(morgan("dev"));
 

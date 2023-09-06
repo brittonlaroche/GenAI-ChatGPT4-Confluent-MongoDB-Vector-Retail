@@ -185,7 +185,8 @@ saveSettingsButton.onclick = async () => {
 
     setCookie('did-api-key', didApiKey, 36500);
     setCookie('open-api-key', openApiKey, 36500);
-    setCookie('user-email', userEmail, 36500);
+    var noQuotesEmail = userEmail.replace(/"|'/g, '');
+    setCookie('user-email', noQuotesEmail, 36500);
     //upsert all the user data into the UserProfile collection
     var response = "";
     var setFirstName = JSON.stringify(document.getElementById("set-first-name").value);
@@ -250,6 +251,7 @@ function updateDocumentSettings(){
     document.getElementById("set-did-api-key").value = getCookie("did-api-key");
     document.getElementById("set-open-api-key").value = getCookie("open-api-key");
     document.getElementById("user-email").value = getCookie("user-email");
+
     OPENAI_API_KEY = document.getElementById("set-open-api-key").value;
 };
 function cleanJSON(fieldValue){
