@@ -49,12 +49,12 @@ loadUserProfileButton.onclick = async () => {
     var txt = "";
     var response = "";
     var userEmail = JSON.stringify(document.getElementById("user-email").value);
-    var myString = "{\"dataSource\": \"Kafcongo-Demo\",\"database\": \"Sales\",\"collection\": \"UserProfile\",\"filter\": {\"email\":  " + userEmail +"}}";
+    var myString = "{\"dataSource\": \""+ API_KEYS['mongo-datasource'] +"\",\"database\": \""+ API_KEYS['mongo-database']+ "\",\"collection\": \""+ API_KEYS['mongo-collection'] +"\",\"filter\": {\"email\":  " + userEmail +"}}";
     console.log(myString);
     var inputDoc = JSON.parse(myString);
     var myBody = JSON.stringify(inputDoc);
     //Check to see if we have an input document or not
-    response = await fetch("http://localhost:3000/v1/action/findOne", {
+    response = await fetch(API_KEYS['local-redirect-url'] +"/v1/action/findOne", {
       method: 'POST',
       body: myBody, // string or object
       headers:  { 
@@ -84,7 +84,7 @@ const sendToTopic = async () => {
 
     //Check to see if we have an input document or not
     console.log(myBody);
-    response = await fetch("http://localhost:3000/records", {
+    response = await fetch(API_KEYS['local-redirect-url'] + "/records", {
       method: 'POST',
       body: myBody, // string or object
       headers: {
@@ -145,7 +145,7 @@ const sendToMicroserviceQna = async () => {
     console.log(myBody);
     //show the thinking video
     document.getElementById("thinking-button").click();
-    response = await fetch("http://localhost:3000/qna", {
+    response = await fetch(API_KEYS['local-redirect-url'] + "/qna", {
       method: 'POST',
       body: myBody, // string or object
       headers: {
@@ -164,6 +164,20 @@ const sendToMicroserviceQna = async () => {
     var recommendations = myJson.recommendations;
     showProducts(recommendations);
     document.getElementById("results").innerHTML = JSON.stringify(myJson, undefined, 2);
+
+    var shortResponse = responseText.substring(0,500);
+    if (s.length >= 500) {
+        shortResponse = shortResponse + " ... My Voice response is limited by time. Read the text for my full response";
+    }
+    txtResponse.value = shortResponse;
+    txtOutput.scrollTop = txtOutput.scrollHeight;
+    lastResponse = {"role":"assistant", "content" : responseText};
+    conversationHistory.push(lastResponse);
+    //show idle animation
+    document.getElementById("silence-button").click();
+    document.getElementById("talk-button").click();
+    //Clear out last user question
+    txtMsg.value = "";
 };
 
 //Handle user settings
@@ -198,7 +212,7 @@ saveSettingsButton.onclick = async () => {
     var setDressSize = JSON.stringify(document.getElementById("set-dress-size").value);
     var setShoeSize = JSON.stringify(document.getElementById("set-shoe-size").value);
     var setAddress = JSON.stringify(document.getElementById("set-address").value);
-    var myString = "{\"dataSource\": \"Kafcongo-Demo\",\"database\": \"Sales\",\"collection\": \"UserProfile\",\"filter\": {\"email\":  " + userEmail +"},"+
+    var myString = "{\"dataSource\": \""+ API_KEYS['mongo-datasource'] +"\",\"database\": \""+ API_KEYS['mongo-database']+ "\",\"collection\": \""+ API_KEYS['mongo-collection'] +"\",\"filter\": {\"email\":  " + userEmail +"},"+
         "\"update\": { " +
         "   \"$set\": {\"first_name\":" + setFirstName + ", " +
                 "\"last_name\":" + setLastName + ", " +
@@ -218,7 +232,7 @@ saveSettingsButton.onclick = async () => {
     var inputDoc = JSON.parse(myString);
     var myBody = JSON.stringify(inputDoc);
     //Check to see if we have an input document or not
-    response = await fetch("http://localhost:3000/v1/action/updateOne", {
+    response = await fetch(API_KEYS['local-redirect-url'] +"/v1/action/updateOne", {
       method: 'POST',
       body: myBody, // string or object
       headers:  { 
@@ -236,8 +250,16 @@ saveSettingsButton.onclick = async () => {
 };
 function updateDocumentSettings(){
     //console.log("updateDocumentSettings with user data");
+    if (userProfileCache === null || userProfileCache === undefined) {
+        console.log('The variable userProfileCache is either null or undefined.');
+        return;
+    }
     var myProfile = JSON.parse(userProfileCache);
     //console.log(myProfile);
+    if (myProfile.document === null) {
+        console.log('The variable myProfile.document.email is either null or undefined.');
+        return;
+    }
     document.getElementById("set-email-address").value = myProfile.document.email;
     document.getElementById("set-first-name").value = myProfile.document.first_name;
     document.getElementById("set-last-name").value = myProfile.document.last_name;
@@ -399,8 +421,6 @@ function generateProductCard(data){
 }
 
 function SendToOpenAI() {
-
-   
     var sQuestion = txtMsg.value;
     /*
     if (sQuestion == "") {
@@ -409,14 +429,11 @@ function SendToOpenAI() {
         return;
     }
     */
- 
     if (OPENAI_API_KEY == ""){
         alert('Please put your open api key inside the settings window.  Press the Open Settings button to enter the information');
         return;
     }
     spMsg.innerHTML = "Chat GPT is thinking...";
-   
-
     //lets keep context
     conversationHistory.push({
         "role": "user", //system,user,assistant
@@ -474,11 +491,11 @@ function SendToOpenAI() {
                 if (s == "") {
                     s = "No response";
                 } else {
-                    var shortRepsonse = s.substring(0,300);
+                    var shortResponse = s.substring(0,300);
                     if (s.length >= 300) {
-                        shortRepsonse = shortRepsonse + " ... My Voice response is limited by time. Read the text for my full response";
+                        shortResponse = shortResponse + " ... My Voice response is limited by time. Read the text for my full response";
                     }
-                    txtResponse.value = shortRepsonse;
+                    txtResponse.value = shortResponse;
                     txtOutput.value += "assistant: " + s +"\n";
                     txtOutput.scrollTop = txtOutput.scrollHeight;
                     lastResponse = {"role":"assistant", "content" : s};
@@ -511,7 +528,6 @@ function SendToOpenAI() {
                                 //further tokens. The returned text will not contain 
                                 //the stop sequence.
     }
-
     //chat GPT-4 gpt-4
     if (sModel.indexOf("gpt-") != -1) {
         //conversationHistoryCopy = JSON.parse(JSON.stringify(conversationHistory));
@@ -531,21 +547,6 @@ function SendToOpenAI() {
     txtMsg.value = "";
 }
 
-/*
-const speechToText = document.getElementById('chkSpeakToText');
-speechToText.onclick = async () => {
-if (oSpeechRecognizer) {
-
-        if (speechToText.checked) {
-            oSpeechRecognizer.start();
-        } else {
-            oSpeechRecognizer.stop();
-            return;
-        }
-
-        return;
-    }   
-*/
 const talkOpenAI = document.getElementById('talk-openai-button');
 talkOpenAI.onmousedown = async () => {
     oSpeechRecognizer = new webkitSpeechRecognition();
