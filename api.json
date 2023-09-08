@@ -1,7 +1,10 @@
+
 {
-    "key": "🤫",
     "url": "https://api.d-id.com",
+    "local-redirect-url":"http://localhost:3000",
     "cc-key": "🤫",
     "mongo-key": "🤫",
-    "open-api-key": "🤫"
+    "mongo-datasource":"Retail-Demo",
+    "mongo-database":"search",
+    "mongo-collection":"UserProfile"
 }
