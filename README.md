@@ -11,6 +11,7 @@
 * run - npm i express morgan
 * Pay attention to the rewrite rules in app.js and update for your MongoDB Atlas and Confluent Cloud Environments
 * (add your api keys) edit the `api.json` inside the uncompressed folder and replace the emoji with your key
+* When running the app.js at http://localhost:3000 press the "Open Settings" button and add in your D-ID and Open AI API keys.
 
 
 ## Start the demo:
