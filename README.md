@@ -21,9 +21,10 @@
 * (connect) press connect you should see the connection ready 
 * (stream) press the start button to start streaming
 
-## MongoDB Tutorials
-[Node tutorial](https://www.mongodb.com/developer/products/atlas/semantic-search-mongodb-atlas-vector-search/)
+## MongoDB Tutorials & Blogs
+[Node tutorial](https://www.mongodb.com/developer/products/atlas/semantic-search-mongodb-atlas-vector-search/)   
 [Python Tutorial](https://www.mongodb.com/developer/products/atlas/building-generative-ai-applications-vector-search-open-source-models/)
+[MongoDB & Confluent Partner Blog](https://www.mongodb.com/blog/post/mongodb-atlas-vector-search-makes-real-time-ai-reality-confluent)
 
 ## Video
 [Youtube Application Demo](https://youtu.be/9thD4128lDE)
