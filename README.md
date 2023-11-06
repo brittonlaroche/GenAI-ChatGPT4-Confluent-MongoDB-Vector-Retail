@@ -29,6 +29,10 @@
 ## MongoDB Data Set
 [Fashion Data Set](https://github.com/afsungur/mongodb-atlas-vector-search-fashion-products)
 
+## Backend QNA Service
+Github for back end QNA microservice that performs the Vector search in MongoDB Atlas and returns the results to the digital assistant app is here:   
+[Backend QNA Service](https://github.com/ashwin-gangadhar-mdb/mdb-ecomm-recsys-chatapp/tree/main/backend)
+
 ## Video
 [Youtube Application Demo](https://youtu.be/9thD4128lDE)
 
