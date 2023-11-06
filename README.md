@@ -24,7 +24,10 @@
 ## MongoDB Tutorials & Blogs
 [Node Tutorial](https://www.mongodb.com/developer/products/atlas/semantic-search-mongodb-atlas-vector-search/)   
 [Python Tutorial](https://www.mongodb.com/developer/products/atlas/building-generative-ai-applications-vector-search-open-source-models/)   
-[MongoDB & Confluent Partner Blog](https://www.mongodb.com/blog/post/mongodb-atlas-vector-search-makes-real-time-ai-reality-confluent)   
+[MongoDB & Confluent Partner Blog](https://www.mongodb.com/blog/post/mongodb-atlas-vector-search-makes-real-time-ai-reality-confluent)  
+
+## MongoDB Data Set
+[Fashion Data Set](https://github.com/afsungur/mongodb-atlas-vector-search-fashion-products)
 
 ## Video
 [Youtube Application Demo](https://youtu.be/9thD4128lDE)
