@@ -1,5 +1,8 @@
 # Live Generative AI demo with Open AI - ChatGPT 4, Kafka, MongoDB Atlas Vector Search and D-ID
 
+## Architecture:
+![architecture](./architecture2.png)   
+   
 ## Initial Setup:
 * (install express) open a terminal in the folder and run  - npm install express
 * Add additional npm installs for what is missing in app.js
@@ -17,11 +20,7 @@
 * (open the app) in the browser add localhost:3000
 * (connect) press connect you should see the connection ready 
 * (stream) press the start button to start streaming   
-   
-## Architecture:
-![architecture](./architecture2.png)
-
-
+    
 ## Franz Kafka Introduction Video
 |Franz Kafka Introduction Video|    
 |---------------------------|   
