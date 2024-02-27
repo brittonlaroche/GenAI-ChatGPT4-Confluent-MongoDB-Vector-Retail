@@ -22,7 +22,7 @@
 * (stream) press the start button to start streaming
 
 ## Franz Kafka Introduction Video
-[![Franz Kafka introduction]( | width=800)<img src="[https://your-image-url.type](https://img.youtube.com/vi/pLU7dS9DJJg/0.jpg)" width="800">](https://www.youtube.com/watch?v=pLU7dS9DJJg)
+[![Franz Kafka introduction]<img src="[https://your-image-url.type](https://img.youtube.com/vi/pLU7dS9DJJg/0.jpg)" width="800">](https://www.youtube.com/watch?v=pLU7dS9DJJg)
 
 ## MongoDB Tutorials & Blogs
 [Node Tutorial](https://www.mongodb.com/developer/products/atlas/semantic-search-mongodb-atlas-vector-search/)   
