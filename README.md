@@ -22,7 +22,7 @@
 * (stream) press the start button to start streaming
 
 ## Franz Kafka Introduction Video
-|Video|    
+|Franz Kafka Introduction Video|    
 |---------------------------|   
 |[Click here to watch a 7 Minute Video on what you will create](https://youtu.be/pLU7dS9DJJg)|   
 |<a href="https://youtu.be/pLU7dS9DJJg" target="video"><img src="https://img.youtube.com/vi/pLU7dS9DJJg/0.jpg" width="1080px"></a>|   
