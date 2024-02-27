@@ -21,7 +21,7 @@
 * (connect) press connect you should see the connection ready 
 * (stream) press the start button to start streaming   
     
-## Franz Kafka Introduction Video
+
 |Franz Kafka Introduction Video|    
 |---------------------------|   
 |[Click here to watch a 7 Minute Video on what you will create](https://youtu.be/pLU7dS9DJJg)|   
