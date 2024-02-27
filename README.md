@@ -1,9 +1,4 @@
 # Live Generative AI demo with Open AI - ChatGPT 4, Kafka, MongoDB Atlas Vector Search and D-ID
-## Franz Kafka Introduction Video
-|Franz Kafka Introduction Video|    
-|---------------------------|   
-|[Click here to watch a 7 Minute Video on what you will create](https://youtu.be/pLU7dS9DJJg)|   
-|<a href="https://youtu.be/pLU7dS9DJJg" target="video"><img src="https://img.youtube.com/vi/pLU7dS9DJJg/0.jpg" width="1080px"></a>|   
 
 ## Initial Setup:
 * (install express) open a terminal in the folder and run  - npm install express
@@ -21,10 +16,18 @@
 * You should see this message - server started on port localhost:3000
 * (open the app) in the browser add localhost:3000
 * (connect) press connect you should see the connection ready 
-* (stream) press the start button to start streaming
-
+* (stream) press the start button to start streaming   
+   
 ## Architecture:
 ![architecture](./architecture2.png)
+
+
+## Franz Kafka Introduction Video
+|Franz Kafka Introduction Video|    
+|---------------------------|   
+|[Click here to watch a 7 Minute Video on what you will create](https://youtu.be/pLU7dS9DJJg)|   
+|<a href="https://youtu.be/pLU7dS9DJJg" target="video"><img src="https://img.youtube.com/vi/pLU7dS9DJJg/0.jpg" width="1080px"></a>|   
+
 
 ## MongoDB Tutorials & Blogs
 [Node Tutorial](https://www.mongodb.com/developer/products/atlas/semantic-search-mongodb-atlas-vector-search/)   
