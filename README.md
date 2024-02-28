@@ -45,3 +45,7 @@ Github for back end QNA microservice that performs the Vector search in MongoDB 
 
 ## App:
 ![app](./app3.png)
+
+## Settings
+Set your OpenAI API key and D-ID Key by opening the setting window at the top of the application
+![image](https://github.com/brittonlaroche/GenAI-ChatGPT4-Confluent-MongoDB-Vector-Retail/assets/32334829/9709475e-555f-481a-9ed3-96baa1ece1f3)
