@@ -40,6 +40,13 @@
 Github for back end QNA microservice that performs the Vector search in MongoDB Atlas and returns the results to the digital assistant app is here:   
 [Backend QNA Service](https://github.com/ashwin-gangadhar-mdb/mdb-ecomm-recsys-chatapp/tree/main/backend)
 
+## Aditional Code Examples
+GenAI Demo with Kafka, Flink, LangChain and OpenAI   
+[Blog](https://www.kai-waehner.de/blog/2024/01/29/genai-demo-with-kafka-flink-langchain-and-openai/)   
+
+Demo: LangChain + Kafka + Flink = Automated Cold Calls of Sales Leads with Salesforce CRM and LinkedIn Data      
+[Github](https://github.com/ora0600/genai-with-confluent/tree/main)
+
 ## Video
 [Youtube Application Demo](https://youtu.be/9thD4128lDE)
 
