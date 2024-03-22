@@ -42,10 +42,10 @@ Github for back end QNA microservice that performs the Vector search in MongoDB 
 
 ## Aditional Code Examples
 GenAI Demo with Kafka, Flink, LangChain and OpenAI   
-[Blog](https://www.kai-waehner.de/blog/2024/01/29/genai-demo-with-kafka-flink-langchain-and-openai/)   
+[Kai Waehner Blog](https://www.kai-waehner.de/blog/2024/01/29/genai-demo-with-kafka-flink-langchain-and-openai/)   
 
 Demo: LangChain + Kafka + Flink = Automated Cold Calls of Sales Leads with Salesforce CRM and LinkedIn Data      
-[Github](https://github.com/ora0600/genai-with-confluent/tree/main)
+[Carsten Muetzlitz Github](https://github.com/ora0600/genai-with-confluent/tree/main)
 
 ## Video
 [Youtube Application Demo](https://youtu.be/9thD4128lDE)
