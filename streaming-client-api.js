@@ -111,7 +111,6 @@ talkButton.onclick = async () => {
   if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
     //turn off the listen function (speech to text) so chat GPT doesn't hear itself talk
     //and think its us... otherwise its the dreaded loop
-    chkMute.checked = true;
     var shortRepsonseText = txtResponse.value;
     const talkResponse = await fetchWithRetries(`${DID_API.url}/talks/streams/${streamId}`, {
       method: 'POST',
