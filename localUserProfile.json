@@ -1,0 +1,15 @@
+{ "document": 
+    {
+        "email":"kai.waehner@confluent.io",
+        "address":"1966 Natural Bridge Dr, Frisco TX 75036",
+        "dress_size":"",
+        "first_name":"Kai",
+        "inseam_size":"31",
+        "last_name":"Waehner",
+        "sex":"Male",
+        "shirt_size":"Large",
+        "shoe_size":"8.5",
+        "waist_size":"32",
+        "age_group":"Adult"
+    }
+}

@@ -1,4 +1,7 @@
-import API_KEYS from './api.json' assert { type: 'json' };
+import API_KEYS from './api.json' with { type: 'json' };
+import VECTOR_SEARCH_FILE from './vector-output3.json' with { type: 'json' };
+import LOCAL_USER_PROFILE from './localUserProfile.json' with { type: 'json' };
+
 
 //if (API_KEYS['open-api-key'] == '🤫') alert('Please put your open api key inside ./api.json and restart..');
 if (API_KEYS['mongo-key'] == '🤫') alert('Please put your MongoDB api key inside ./api.json and restart..');
@@ -19,7 +22,7 @@ var OPENAI_API_KEY = "";
 var conversationHistory = new Array();
 var bTextToSpeechSupported = false;
 var bSpeechInProgress = false;
-var oSpeechRecognizer = null
+var oSpeechRecognizer = null;
 var oSpeechSynthesisUtterance = null;
 var lastResponse = {};
 var oVoices = null;
@@ -41,10 +44,12 @@ loadUserProfileButton.onclick = async () => {
     txtOutput.value = "";
     conversationHistory = new Array();
     conversationHistory.push({"role":"system","content":"You are a digital assistant and your name is Jayne Kafcongo."});
+    conversationHistory.push({"role":"system","content":"Please try to limit responses to 140 words."});
     if ("webkitSpeechRecognition" in window) {
+        console.log("webkitSpeechRecognition is available. Speech to text is supported");
     } else {
         //speech to text not supported
-        lblSpeak.style.display = "none";
+        console.log("webkitSpeechRecognition is not available. Speech to text is not supported.");
     }
     var txt = "";
     var response = "";
@@ -53,17 +58,30 @@ loadUserProfileButton.onclick = async () => {
     console.log(myString);
     var inputDoc = JSON.parse(myString);
     var myBody = JSON.stringify(inputDoc);
+    var myJson = {};
     //Check to see if we have an input document or not
-    response = await fetch(API_KEYS['local-redirect-url'] +"/v1/action/findOne", {
-      method: 'POST',
-      body: myBody, // string or object
-      headers:  { 
-                "Content-Type":"application/json",
-                "api-key": `${API_KEYS['mongo-key']}`
-          }
-    });
+    try {
+        response = await fetch(API_KEYS['local-redirect-url'] +"/v1/action/findOne", {
+        method: 'POST',
+        body: myBody, // string or object
+        headers:  { 
+                    "Content-Type":"application/json",
+                    "api-key": `${API_KEYS['mongo-key']}`
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        } else {
+            myJson = await response.json(); //extract JSON from the http response
+        }
+    } catch (error) {
+        // TypeError: Failed to fetch
+        // This code is to handle unstable demo environment where the service might be down
+        // and provide results so the demo won't fail
+        console.log('There was an error fetching the user profile information from the MongoDB Data API. Now using default localUserProfile.json document.', error);
+        myJson = LOCAL_USER_PROFILE;
+    }
     console.log(response);
-    const myJson = await response.json(); //extract JSON from the http response
     console.log(myJson);
     var userProfile = JSON.stringify(myJson, undefined, 2);
     userProfileCache = userProfile;
@@ -120,7 +138,9 @@ const sendToMicroserviceQna = async () => {
     //QnA microservice
     var txt = "";
     var response = "";
+    var myJson = "";
     var sQuestion = txtMsg.value;
+    txtMsg.value = "";
     
     /*
     if (sQuestion == "") {
@@ -145,15 +165,25 @@ const sendToMicroserviceQna = async () => {
     console.log(myBody);
     //show the thinking video
     document.getElementById("thinking-button").click();
-    response = await fetch(API_KEYS['local-redirect-url'] + "/qna", {
-      method: 'POST',
-      body: myBody, // string or object
-      headers: {
-          "Content-Type": "application/json" 
-        }
-    });
+    try {
+        response = await fetch(API_KEYS['local-redirect-url'] + "/qna", {
+        method: 'POST',
+        body: myBody, // string or object
+        headers: {
+            "Content-Type": "application/json" 
+            }
+        });
+        myJson = await response.json(); //extract JSON from the http response
+    } catch (error) {
+        // TypeError: Failed to fetch
+        // This code is to handle unstable demo environment where the service might be down
+        // and provide results so the demo won't fail
+        console.log('There was an error. Now using default document.', error);
+        await sleep(7000);
+        myJson = VECTOR_SEARCH_FILE;
+    }
     //console.log(response.toString());
-    const myJson = await response.json(); //extract JSON from the http response
+    
     //show idle animation
     document.getElementById("silence-button").click();
     console.log(myJson);
@@ -162,11 +192,18 @@ const sendToMicroserviceQna = async () => {
     txtOutput.scrollTop = txtOutput.scrollHeight;
     console.log(responseText);
     var recommendations = myJson.recommendations;
+    console.log(recommendations);
+    if (recommendations === null || recommendations === undefined) {
+        console.log('The variable recommendations is either null or undefined. Switching to default message');
+        myJson = VECTOR_SEARCH_FILE;
+        recommendations = myJson.recommendations;
+    }
+    
     showProducts(recommendations);
     document.getElementById("results").innerHTML = JSON.stringify(myJson, undefined, 2);
 
-    var shortResponse = responseText.substring(0,500);
-    if (s.length >= 500) {
+    var shortResponse = responseText.substring(0,1000);
+    if (responseText.length >= 700) {
         shortResponse = shortResponse + " ... My Voice response is limited by time. Read the text for my full response";
     }
     txtResponse.value = shortResponse;
@@ -177,7 +214,6 @@ const sendToMicroserviceQna = async () => {
     document.getElementById("silence-button").click();
     document.getElementById("talk-button").click();
     //Clear out last user question
-    txtMsg.value = "";
 };
 
 //Handle user settings
@@ -212,11 +248,13 @@ saveSettingsButton.onclick = async () => {
     var setDressSize = JSON.stringify(document.getElementById("set-dress-size").value);
     var setShoeSize = JSON.stringify(document.getElementById("set-shoe-size").value);
     var setAddress = JSON.stringify(document.getElementById("set-address").value);
+    var setAgeGroup = JSON.stringify(document.getElementById("set-age-group").value)
     var myString = "{\"dataSource\": \""+ API_KEYS['mongo-datasource'] +"\",\"database\": \""+ API_KEYS['mongo-database']+ "\",\"collection\": \""+ API_KEYS['mongo-collection'] +"\",\"filter\": {\"email\":  " + userEmail +"},"+
         "\"update\": { " +
         "   \"$set\": {\"first_name\":" + setFirstName + ", " +
                 "\"last_name\":" + setLastName + ", " +
                 "\"email\":" + userEmail + ", " +
+                "\"age_group\":" + setAgeGroup + ", " +
                 "\"shirt_size\":" + setShirtSize + ", " +
                 "\"waist_size\":" + setWaistSize + ", " +
                 "\"inseam_size\":" + setInseamSize + ", " +
@@ -254,15 +292,22 @@ function updateDocumentSettings(){
         console.log('The variable userProfileCache is either null or undefined.');
         return;
     }
+    //console.log("userProfileCache: ");
+    //console.log(userProfileCache);
     var myProfile = JSON.parse(userProfileCache);
-    //console.log(myProfile);
+    //console.log("myProfile: " + myProfile);
+    //console.log("myProfile stringify: " + JSON.stringify(myProfile));
     if (myProfile.document === null) {
-        console.log('The variable myProfile.document.email is either null or undefined.');
+        console.log('The variable myProfile is either null or undefined.');
         return;
     }
-    document.getElementById("set-email-address").value = myProfile.document.email;
+    if (!myProfile.document['first_name']) {
+        console.log('The variable myProfile.first_name is either null or undefined.');
+        return;
+    }
     document.getElementById("set-first-name").value = myProfile.document.first_name;
     document.getElementById("set-last-name").value = myProfile.document.last_name;
+    document.getElementById("set-email-address").value = myProfile.document.email;
     document.getElementById("set-sex").value = myProfile.document.sex;
     document.getElementById("set-shirt-size").value = myProfile.document.shirt_size;
     document.getElementById("set-waist-size").value = myProfile.document.waist_size;
@@ -270,10 +315,11 @@ function updateDocumentSettings(){
     document.getElementById("set-dress-size").value = myProfile.document.dress_size;
     document.getElementById("set-shoe-size").value = myProfile.document.shoe_size;
     document.getElementById("set-address").value = myProfile.document.address;
+    document.getElementById("set-age-group").value = myProfile.document.age_group;
+    
+    document.getElementById("user-email").value = myProfile.document.email;
     document.getElementById("set-did-api-key").value = getCookie("did-api-key");
     document.getElementById("set-open-api-key").value = getCookie("open-api-key");
-    document.getElementById("user-email").value = getCookie("user-email");
-
     OPENAI_API_KEY = document.getElementById("set-open-api-key").value;
 };
 function cleanJSON(fieldValue){
@@ -403,9 +449,16 @@ function generateProductCard(data){
     title.textContent = productData.title;
     title.setAttribute("id", "title");
 
+    const productId = document.createElement('p');
+    productId.textContent = productData.id;
+    productId.setAttribute("id", "productId");
+
     // Create price element
+    var myPrice = (productData.price/42.7134).toFixed();
+    var deltaPrice = myPrice.toString();
+    deltaPrice = "$ " + deltaPrice + ".99";
     const price = document.createElement('p');
-    price.textContent = productData.price;
+    price.textContent = deltaPrice;
     price.setAttribute("id", "price");
 
     // Add click event listener to the product card
@@ -413,6 +466,7 @@ function generateProductCard(data){
 
     // Append elements to product card
     productCard.appendChild(img);
+    productCard.appendChild(productId);
     productCard.appendChild(title);
     productCard.appendChild(price);
 
@@ -491,14 +545,15 @@ function SendToOpenAI() {
                 if (s == "") {
                     s = "No response";
                 } else {
-                    var shortResponse = s.substring(0,300);
-                    if (s.length >= 300) {
+                    var shortResponse = s.substring(0,700);
+                    if (s.length >= 700) {
                         shortResponse = shortResponse + " ... My Voice response is limited by time. Read the text for my full response";
                     }
                     txtResponse.value = shortResponse;
                     txtOutput.value += "assistant: " + s +"\n";
                     txtOutput.scrollTop = txtOutput.scrollHeight;
                     lastResponse = {"role":"assistant", "content" : s};
+                    console.log(conversationHistory);
                     conversationHistory.push(lastResponse);
                     //show idle animation
                     document.getElementById("silence-button").click();
@@ -549,6 +604,7 @@ function SendToOpenAI() {
 
 const talkOpenAI = document.getElementById('talk-openai-button');
 talkOpenAI.onmousedown = async () => {
+
     oSpeechRecognizer = new webkitSpeechRecognition();
     oSpeechRecognizer.continuous = true;
     oSpeechRecognizer.interimResults = true;
@@ -574,7 +630,8 @@ talkOpenAI.onmousedown = async () => {
     };
 
     oSpeechRecognizer.onerror = function (event) {
-        speechToText.checked = false;
+        console.log("Speech to text error detected");
+        console.log(error);
     };
 }
 function sleep(ms) {
