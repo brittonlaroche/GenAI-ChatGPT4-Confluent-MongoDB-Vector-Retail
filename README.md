@@ -41,6 +41,9 @@ Github for back end QNA microservice that performs the Vector search in MongoDB 
 [Backend QNA Service](https://github.com/ashwin-gangadhar-mdb/mdb-ecomm-recsys-chatapp/tree/main/backend)
 
 ## Aditional Code Examples
+Data Augmentation how to vector encode product and inventory data using Confluent Cloud in real-time and update MongoDB for continuously updated vector embeddings:   
+[Gen AI First Step: RAG Data Augmentation for Gen AI: Building your Vector Database](https://github.com/brittonlaroche/Confluent-Kafka-Vector-Encoding/)
+
 GenAI Demo with Kafka, Flink, LangChain and OpenAI   
 [Kai Waehner Blog](https://www.kai-waehner.de/blog/2024/01/29/genai-demo-with-kafka-flink-langchain-and-openai/)   
 
