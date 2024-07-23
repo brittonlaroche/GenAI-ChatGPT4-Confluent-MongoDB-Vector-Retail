@@ -1,5 +1,6 @@
 'use strict';
-import DID_API from './api.json' assert { type: 'json' };
+//import DID_API from './api.json' assert { type: 'json' };
+import DID_API from './api.json' with { type: 'json' };
 //if (DID_API.url == '🤫') alert('Please put your api key inside ./api.json and restart..');
 
 var DID_API_KEY = "";
